@@ -2868,6 +2868,13 @@ except RuntimeError as e:
         arr = ["a", "b", "c"]
         self.assertEqual(arr, dataloader.default_collate(arr))
 
+    def test_default_collate_mapping_inconsistent_keys(self):
+        batch = [{"account_id": 1}, {"account_id": 2, "fraud_label": 1}]
+
+        for samples in (batch, batch[::-1]):
+            with self.assertRaisesRegex(RuntimeError, "same keys"):
+                dataloader.default_collate(samples)
+
     def test_default_collate_mapping_keep_type(self):
         batch = [CustomDict({"a": 1, "b": 2}), CustomDict({"a": 3, "b": 4})]
         collated = dataloader.default_collate(batch)
