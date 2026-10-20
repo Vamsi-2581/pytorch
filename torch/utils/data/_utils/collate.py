@@ -161,6 +161,10 @@ def collate(
                 )
 
     if isinstance(elem, collections.abc.Mapping):
+        if any(d.keys() != elem.keys() for d in batch):
+            raise RuntimeError(
+                "each element in list of batch should have the same keys"
+            )
         try:
             if isinstance(elem, collections.abc.MutableMapping):
                 # The mapping type may have extra properties, so we can't just
